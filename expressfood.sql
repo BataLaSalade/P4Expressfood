@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 22 mai 2018 à 16:09
+-- Généré le :  mer. 23 mai 2018 à 13:46
 -- Version du serveur :  5.7.19
 -- Version de PHP :  7.1.9
 
@@ -31,20 +31,32 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `commande`;
 CREATE TABLE IF NOT EXISTS `commande` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `Utilisateur_id` int(11) NOT NULL,
   `date` datetime NOT NULL,
   `statutPaiement` tinyint(4) NOT NULL,
   `statutLivraison` tinyint(4) NOT NULL,
   `timerLivraison` int(11) NOT NULL DEFAULT '20',
   `adresseDefaut` tinyint(4) NOT NULL DEFAULT '1',
-  `numVoie` int(11) NOT NULL,
-  `voie` varchar(255) NOT NULL,
-  `complementAdresse` varchar(255) NOT NULL,
-  `codePostal` varchar(5) NOT NULL,
-  `ville` varchar(70) NOT NULL,
-  `Utilisateur_id` int(11) NOT NULL,
+  `numVoie` int(11) DEFAULT NULL,
+  `voie` varchar(255) DEFAULT NULL,
+  `complementAdresse` varchar(255) DEFAULT NULL,
+  `codePostal` varchar(5) DEFAULT NULL,
+  `ville` varchar(70) DEFAULT NULL,
   PRIMARY KEY (`id`,`Utilisateur_id`),
   KEY `fk_Commande_Utilisateur1_idx` (`Utilisateur_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `commande`
+--
+
+INSERT INTO `commande` (`id`, `Utilisateur_id`, `date`, `statutPaiement`, `statutLivraison`, `timerLivraison`, `adresseDefaut`, `numVoie`, `voie`, `complementAdresse`, `codePostal`, `ville`) VALUES
+(1, 21, '2018-05-23 14:24:12', 0, 0, 20, 0, NULL, NULL, NULL, NULL, NULL),
+(2, 17, '2018-05-23 14:25:12', 0, 0, 20, 1, NULL, NULL, NULL, NULL, NULL),
+(3, 22, '2018-05-23 14:26:12', 1, 0, 20, 0, 3, 'rue de ma ville', NULL, '13013', 'Marseille'),
+(4, 23, '2018-05-23 14:28:12', 1, 0, 20, 1, NULL, NULL, NULL, NULL, NULL),
+(5, 21, '2018-05-23 14:28:12', 1, 1, 20, 1, NULL, NULL, NULL, NULL, NULL),
+(6, 17, '2018-05-23 14:25:12', 1, 2, 20, 0, 113, 'chemin de la pinède bleue', 'en bas à droite', '13013', 'Marseille');
 
 -- --------------------------------------------------------
 
@@ -61,6 +73,20 @@ CREATE TABLE IF NOT EXISTS `commande_dessert` (
   KEY `fk_Commande_has_Dessert_Commande1_idx` (`Commande_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `commande_dessert`
+--
+
+INSERT INTO `commande_dessert` (`Commande_id`, `Dessert_id`) VALUES
+(1, 1),
+(2, 1),
+(4, 1),
+(5, 1),
+(1, 2),
+(3, 2),
+(4, 2),
+(6, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -76,6 +102,20 @@ CREATE TABLE IF NOT EXISTS `commande_plat` (
   KEY `fk_Commande_has_Plat_Commande_idx` (`Commande_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `commande_plat`
+--
+
+INSERT INTO `commande_plat` (`Commande_id`, `Plat_id`) VALUES
+(1, 1),
+(3, 1),
+(4, 1),
+(6, 1),
+(1, 2),
+(2, 2),
+(4, 2),
+(5, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -89,11 +129,23 @@ CREATE TABLE IF NOT EXISTS `dessert` (
   `onLine` tinyint(4) NOT NULL,
   `nom` varchar(70) NOT NULL,
   `description` longtext NOT NULL,
-  `quantite` int(11) NOT NULL,
+  `quantite` int(11) NOT NULL DEFAULT '1',
   `prixUnitaireHT` decimal(3,2) NOT NULL,
   `tauxTVA100` decimal(3,1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `dessert`
+--
+
+INSERT INTO `dessert` (`id`, `dailyMenu`, `onLine`, `nom`, `description`, `quantite`, `prixUnitaireHT`, `tauxTVA100`) VALUES
+(1, '2018-05-24', 1, 'Salade de fruits frais', 'Salade avec fruit frais de saison : pomme, poire, fraise et pamplemousse', 1, '3.10', '10.0'),
+(2, '2018-05-24', 1, 'Dessert marbré', 'Dessert marbré, citron et framboise', 1, '3.10', '10.0'),
+(3, '2018-05-25', 0, 'Fromage blanc', 'Fromage blanc du producteur du coin avec coulis au choix : crème de marron ou fruit rouge', 1, '3.10', '10.0'),
+(4, '2018-05-25', 0, 'Verrine grecque', 'Verrine aux abricots, muesli, yahourt grec', 1, '3.10', '10.0'),
+(5, '2018-05-26', 0, 'Tarte coco', 'Tarte à la noix de coco  avec son coulis de chocolat intense', 1, '3.10', '10.0'),
+(6, '2018-05-26', 0, 'Tarte chocolat', 'Délicieuse tarte au chocolat, surmontée d\'un crumble croquant', 1, '3.10', '10.0');
 
 -- --------------------------------------------------------
 
@@ -108,11 +160,23 @@ CREATE TABLE IF NOT EXISTS `plat` (
   `onLine` tinyint(4) NOT NULL,
   `nom` varchar(70) NOT NULL,
   `description` longtext NOT NULL,
-  `quantite` int(11) NOT NULL,
+  `quantite` int(11) NOT NULL DEFAULT '1',
   `prixUnitaireHT` decimal(3,2) NOT NULL,
   `tauxTVA100` decimal(3,1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `plat`
+--
+
+INSERT INTO `plat` (`id`, `dailyMenu`, `onLine`, `nom`, `description`, `quantite`, `prixUnitaireHT`, `tauxTVA100`) VALUES
+(1, '2018-05-24', 1, 'Salade du soleil', 'Salade de pâtes composées de pâtes, poulet, courguettes, tomates cerises et confites basilic', 1, '6.70', '10.0'),
+(2, '2018-05-24', 1, 'Salade poulet verde', 'Salade de poulet dont tous les accompagnements sont vert : fèves, petit-pois, avocat, crème de roquette', 1, '6.70', '10.0'),
+(3, '2018-05-25', 0, 'Salade Thaï', 'Salade thaï avec crevettes, carottes, courgette, nouilles, coriande et sésame', 1, '6.70', '10.0'),
+(4, '2018-05-25', 0, 'Wrap mexicain', 'Wrap, poulet, guacamole, salade iceberg, oignon rouge et tomate', 1, '6.70', '10.0'),
+(5, '2018-05-26', 0, 'Sandwich méditerranéen', 'Jambon cru, tapenade, tomates, fêta dans pain de tradition', 1, '6.70', '10.0'),
+(6, '2018-05-26', 0, 'La Pesto', 'Salade de ravioli au fromage, sauce pesto, tomate séchée, pignons et parmesan', 1, '6.70', '10.0');
 
 -- --------------------------------------------------------
 
@@ -134,14 +198,27 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `isLivreur` tinyint(4) NOT NULL,
   `statutLivreur` tinyint(4) NOT NULL,
   `isClient` tinyint(4) NOT NULL,
-  `telephone` varchar(10) NOT NULL,
-  `numVoie` int(11) NOT NULL,
-  `voie` varchar(255) NOT NULL,
-  `complementAdresse` varchar(255) NOT NULL,
-  `codePostal` varchar(5) NOT NULL,
-  `ville` varchar(70) NOT NULL,
+  `telephone` varchar(10) DEFAULT NULL,
+  `numVoie` int(11) DEFAULT NULL,
+  `voie` varchar(255) DEFAULT NULL,
+  `complementAdresse` varchar(255) DEFAULT NULL,
+  `codePostal` varchar(5) DEFAULT NULL,
+  `ville` varchar(70) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`id`, `prenom`, `nom`, `mail`, `login`, `mdp`, `longitude`, `latitude`, `isAdmin`, `isLivreur`, `statutLivreur`, `isClient`, `telephone`, `numVoie`, `voie`, `complementAdresse`, `codePostal`, `ville`) VALUES
+(17, 'Antoine', 'Lagale', 'antoine-lagale@monmail.fr', 'Lagale', '125gtrz!#é157', '72.123456', '2.123456', 0, 0, 0, 1, '0608123789', 12, 'Chemin de chez moi', NULL, '13013', 'Marseille'),
+(18, 'Marie-jo', 'Dorin', 'mariejd@mail.fr', 'Marie-Admin', '123fred321', '32.123456', '26.123456', 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(19, 'John', 'Doe', 'johndoe@gmail.com', 'Livreur-John', '147ferg741', '31.123456', '22.745612', 0, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(20, 'Jane', 'Doe', 'janninedoe@gmail.com', 'Livreur-cacahuete72', '72petitchat568', '35.123456', '62.745612', 0, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(21, 'Regine', 'Mariani', 'reginemariani@monmail.fr', 'Reginette', '1524ghjdbnze!7', '72.123457', '2.123457', 0, 0, 0, 1, '060154697', 56, 'Chemin de chez elle', 'appartement B12', '13013', 'Marseille'),
+(22, 'Molly', 'Diego', 'molinette25@monmail.fr', 'Molinette', '125gtrz!#é157', '72.123457', '2.123457', 0, 0, 0, 1, '0608123789', 12, 'Chemin de chez moi', NULL, '13013', 'Marseille'),
+(23, 'Sancho', 'Decuba', 'sancho@monmail.fr', 'CmoiSancho', '123aze654', '72.123457', '2.123457', 0, 0, 0, 1, '0721568984', 612, 'route du chateau de ma mère', 'au fin fond de la garigue', '13013', 'Marseille');
 
 --
 -- Contraintes pour les tables déchargées
