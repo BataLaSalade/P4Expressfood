@@ -33,10 +33,10 @@ CREATE TABLE IF NOT EXISTS `commande` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `Utilisateur_id` int(11) NOT NULL,
   `date` datetime NOT NULL,
-  `statutPaiement` tinyint(4) NOT NULL,
-  `statutLivraison` tinyint(4) NOT NULL,
-  `timerLivraison` int(11) NOT NULL DEFAULT '20',
-  `adresseDefaut` tinyint(4) NOT NULL DEFAULT '1',
+  `statutPaiement` tinyint(4) NOT NULL, -- boolean : si faux (0) retourne notification ex. "paiement refusé", si vrai (1) retourne notification ex. "paiement accepté"
+  `statutLivraison` tinyint(4) NOT NULL, -- 3 états : (0) = enregistrée, (1) = en cours de livraison, (2) = livrée
+  `timerLivraison` int(11) NOT NULL DEFAULT '20', -- estimation du temps de livraison, compteur de 20min à 0
+  `adresseDefaut` tinyint(4) NOT NULL DEFAULT '1', -- boolean : si faux (0) remplir les attributs suivants, si vrai (1) = valeur par défaut = utiliser les informations du compte utilisateur correspondant
   `numVoie` int(11) DEFAULT NULL,
   `voie` varchar(255) DEFAULT NULL,
   `complementAdresse` varchar(255) DEFAULT NULL,
@@ -62,6 +62,8 @@ INSERT INTO `commande` (`id`, `Utilisateur_id`, `date`, `statutPaiement`, `statu
 
 --
 -- Structure de la table `commande_dessert`
+--
+-- Table de liaison "commandes contient desserts"
 --
 
 DROP TABLE IF EXISTS `commande_dessert`;
@@ -91,6 +93,8 @@ INSERT INTO `commande_dessert` (`Commande_id`, `Dessert_id`) VALUES
 
 --
 -- Structure de la table `commande_plat`
+--
+-- Table de liaison "commandes contient plats"
 --
 
 DROP TABLE IF EXISTS `commande_plat`;
@@ -125,8 +129,8 @@ INSERT INTO `commande_plat` (`Commande_id`, `Plat_id`) VALUES
 DROP TABLE IF EXISTS `dessert`;
 CREATE TABLE IF NOT EXISTS `dessert` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dailyMenu` date NOT NULL,
-  `onLine` tinyint(4) NOT NULL,
+  `dailyMenu` date NOT NULL, -- correspond à la date à laquelle le menu doit être publié
+  `onLine` tinyint(4) NOT NULL, -- boolean : faux (0) = non publié, vrai (1) = publié quand on est a la date "dailyMenu"
   `nom` varchar(70) NOT NULL,
   `description` longtext NOT NULL,
   `quantite` int(11) NOT NULL DEFAULT '1',
@@ -145,7 +149,7 @@ INSERT INTO `dessert` (`id`, `dailyMenu`, `onLine`, `nom`, `description`, `quant
 (3, '2018-05-25', 0, 'Fromage blanc', 'Fromage blanc du producteur du coin avec coulis au choix : crème de marron ou fruit rouge', 1, '3.10', '10.0'),
 (4, '2018-05-25', 0, 'Verrine grecque', 'Verrine aux abricots, muesli, yahourt grec', 1, '3.10', '10.0'),
 (5, '2018-05-26', 0, 'Tarte coco', 'Tarte à la noix de coco  avec son coulis de chocolat intense', 1, '3.10', '10.0'),
-(6, '2018-05-26', 0, 'Tarte chocolat', 'Délicieuse tarte au chocolat, surmontée d\'un crumble croquant', 1, '3.10', '10.0');
+(6, '2018-05-26', 0, 'Tarte chocolat', "Délicieuse tarte au chocolat, surmontée d'un crumble croquant", 1, '3.10', '10.0');
 
 -- --------------------------------------------------------
 
