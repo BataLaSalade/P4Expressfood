@@ -1,0 +1,56 @@
+Liste des requêtes SQL
+
+1./ Afficher la liste des commandes passées
+2./ Afficher le détail de la commande 4
+3./ Afficher la liste des commandes passées par l'utilisateur 6 ou par Sancho (jointure)
+
+4./ Afficher la liste des produits
+5./ Afficher la liste des desserts
+6./ Afficher la liste des plats
+7./ Afficher la liste des produits du jours en date du 29/05/2018 (jointure)
+
+
+8./ Afficher la liste des clients
+9./ Afficher la liste des livreurs
+10./ Afficher la liste des livreurs dispo
+11./ Afficher la liste des livreurs occupés
+
+12./ Afficher le détail de la commande passées le 31/05/2018 par Sancho (jointure)
+
+
+1./ Afficher les commandes passées
+    SELECT * FROM commande WHERE statutPaiement=1
+
+2./ Afficher le détail de la commande 4
+    SELECT * FROM détail_commande WHERE Commande_id=4
+
+3./ Afficher la liste des commandes passées par l'utilisateur 6 ou par Sancho (jointure)
+
+4./ Afficher la liste des produits
+    SELECT * FROM produit
+
+5./ Afficher la liste des desserts 
+    SELECT * FROM `produit` WHERE Categorie_id=2    <-- (sachant que l'ID desserts = 2)
+                                                    <-- (faire la même chose avec la jointure entre la table produits et categorie)
+
+
+6./ Afficher la liste des plats
+    SELECT * FROM `produit` WHERE Categorie_id=1    <-- (sachant que l'ID desserts = 2)
+                                                    <-- (faire la même chose avec la jointure entre la table produits et categorie)
+
+7./ Afficher la liste des produits du jours en date du 29/05/2018 (jointure)
+
+
+8./ Afficher la liste des clients
+    SELECT * FROM utilisateur WHERE isClient=1
+
+9./ Afficher la liste des livreurs
+    SELECT * FROM `utilisateur` WHERE isLivreur=1
+
+10./ Afficher la liste des livreurs dispo
+    SELECT * FROM `utilisateur` WHERE isLivreur=1 AND statutLivreur=0
+
+11./ Afficher la liste des livreurs occupés
+    SELECT * FROM `utilisateur` WHERE isLivreur=1 AND statutLivreur=1
+
+12./ Afficher le détail de la commande passées le 31/05/2018 par Sancho (jointure)
