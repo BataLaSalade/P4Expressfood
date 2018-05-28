@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3307
--- Généré le :  ven. 25 mai 2018 à 13:50
+-- Généré le :  lun. 28 mai 2018 à 13:14
 -- Version du serveur :  10.2.8-MariaDB
 -- Version de PHP :  7.1.9
 
@@ -56,13 +56,13 @@ CREATE TABLE IF NOT EXISTS `commande` (
   `date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `statutPaiement` tinyint(4) NOT NULL,
   `statutLivraison` tinyint(4) NOT NULL,
-  `timerLivraison` int(11) NOT NULL DEFAULT 20,
   `adresseDefaut` tinyint(4) NOT NULL DEFAULT 1,
   `numVoie` int(11) DEFAULT NULL,
   `voie` varchar(255) DEFAULT NULL,
   `complementAdresse` varchar(255) DEFAULT NULL,
   `codePostal` varchar(5) DEFAULT NULL,
   `ville` varchar(70) DEFAULT NULL,
+  `datePriseEnCharge` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`,`Utilisateur_id`),
   KEY `fk_Commande_Utilisateur1_idx` (`Utilisateur_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
@@ -71,13 +71,13 @@ CREATE TABLE IF NOT EXISTS `commande` (
 -- Déchargement des données de la table `commande`
 --
 
-INSERT INTO `commande` (`id`, `Utilisateur_id`, `date`, `statutPaiement`, `statutLivraison`, `timerLivraison`, `adresseDefaut`, `numVoie`, `voie`, `complementAdresse`, `codePostal`, `ville`) VALUES
-(1, 5, '2018-05-23 12:24:12', 0, 0, 20, 0, NULL, NULL, NULL, NULL, NULL),
-(2, 1, '2018-05-23 12:25:12', 0, 0, 20, 1, NULL, NULL, NULL, NULL, NULL),
-(3, 6, '2018-05-23 12:26:12', 1, 0, 20, 0, 3, 'rue de ma ville', NULL, '13013', 'Marseille'),
-(4, 6, '2018-05-23 12:28:12', 1, 0, 20, 1, NULL, NULL, NULL, NULL, NULL),
-(5, 1, '2018-05-23 12:28:12', 1, 1, 20, 1, NULL, NULL, NULL, NULL, NULL),
-(6, 7, '2018-05-23 12:25:12', 1, 2, 20, 0, 113, 'chemin de la pinède bleue', 'en bas à droite', '13013', 'Marseille');
+INSERT INTO `commande` (`id`, `Utilisateur_id`, `date`, `statutPaiement`, `statutLivraison`, `adresseDefaut`, `numVoie`, `voie`, `complementAdresse`, `codePostal`, `ville`, `datePriseEnCharge`) VALUES
+(1, 5, '2018-05-23 12:24:12', 0, 0, 0, NULL, NULL, NULL, NULL, NULL, '0000-00-00 00:00:00'),
+(2, 1, '2018-05-23 12:25:12', 0, 0, 1, NULL, NULL, NULL, NULL, NULL, '0000-00-00 00:00:00'),
+(3, 6, '2018-05-23 12:26:12', 1, 0, 0, 3, 'rue de ma ville', NULL, '13013', 'Marseille', '0000-00-00 00:00:00'),
+(4, 6, '2018-05-23 12:28:12', 1, 0, 1, NULL, NULL, NULL, NULL, NULL, '0000-00-00 00:00:00'),
+(5, 1, '2018-05-28 13:13:38', 1, 1, 1, NULL, NULL, NULL, NULL, NULL, '2018-05-23 12:32:05'),
+(6, 7, '2018-05-28 13:14:24', 1, 2, 0, 113, 'chemin de la pinède bleue', 'en bas à droite', '13013', 'Marseille', '2018-05-23 12:28:15');
 
 -- --------------------------------------------------------
 
@@ -131,7 +131,8 @@ CREATE TABLE IF NOT EXISTS `produit` (
   `nom` varchar(70) NOT NULL,
   `description` longtext NOT NULL,
   `prixUnitaireHT` decimal(3,2) NOT NULL,
-  `tauxTVA100` decimal(3,1) NOT NULL,
+  `startingDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `endingDate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`,`Categorie_id`),
   KEY `fk_Produit_Categorie1_idx` (`Categorie_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
@@ -140,19 +141,19 @@ CREATE TABLE IF NOT EXISTS `produit` (
 -- Déchargement des données de la table `produit`
 --
 
-INSERT INTO `produit` (`id`, `Categorie_id`, `dateCreation`, `dateModif`, `onLine`, `nom`, `description`, `prixUnitaireHT`, `tauxTVA100`) VALUES
-(1, 2, '2018-05-24', '2018-05-24 07:00:11', 1, 'Salade de fruits frais', 'Salade avec fruit frais de saison : pomme, poire, fraise et pamplemousse', '3.10', '10.0'),
-(2, 2, '2018-05-24', '2018-05-24 07:10:11', 1, 'Dessert marbré', 'Dessert marbré, citron et framboise', '3.10', '10.0'),
-(3, 1, '2018-05-24', '2018-05-24 07:15:11', 1, 'Salade du soleil', 'Salade de pâtes composées de pâtes, poulet, courguettes, tomates cerises et confites basilic', '6.70', '10.0'),
-(4, 1, '2018-05-24', '2018-05-24 07:20:11', 1, 'Salade poulet verde', 'Salade de poulet dont tous les accompagnements sont vert : fèves, petit-pois, avocat, crème de roquette', '6.70', '10.0'),
-(5, 2, '2018-05-25', '2018-05-25 07:20:11', 0, 'Fromage blanc', 'Fromage blanc du producteur du coin avec coulis au choix : crème de marron ou fruit rouge', '3.10', '10.0'),
-(6, 2, '2018-05-25', '2018-05-25 07:25:11', 0, 'Verrine grecque', 'Verrine aux abricots, muesli, yahourt grec', '3.10', '10.0'),
-(7, 1, '2018-05-25', '2018-05-25 07:30:11', 0, 'Salade Thaï', 'Salade thaï avec crevettes, carottes, courgette, nouilles, coriande et sésame', '6.70', '10.0'),
-(8, 1, '2018-05-25', '2018-05-25 07:35:11', 0, 'Wrap mexicain', 'Wrap, poulet, guacamole, salade iceberg, oignon rouge et tomate', '6.70', '10.0'),
-(9, 2, '2018-05-26', '2018-05-26 07:20:11', 0, 'Tarte coco', 'Tarte à la noix de coco  avec son coulis de chocolat intense', '3.10', '10.0'),
-(10, 2, '2018-05-26', '2018-05-26 07:25:11', 0, 'Tarte chocolat', 'Délicieuse tarte au chocolat, surmontée d\'un crumble croquant', '3.10', '10.0'),
-(11, 1, '2018-05-26', '2018-05-26 07:30:11', 0, 'Sandwich méditerranéen', 'Jambon cru, tapenade, tomates, fêta dans pain de tradition', '6.70', '10.0'),
-(12, 1, '2018-05-26', '2018-05-26 07:35:11', 0, 'La Pesto', 'Salade de ravioli au fromage, sauce pesto, tomate séchée, pignons et parmesan', '6.70', '10.0');
+INSERT INTO `produit` (`id`, `Categorie_id`, `dateCreation`, `dateModif`, `onLine`, `nom`, `description`, `prixUnitaireHT`, `startingDate`, `endingDate`) VALUES
+(1, 2, '2018-05-24', '2018-05-28 10:11:04', 1, 'Salade de fruits frais', 'Salade avec fruit frais de saison : pomme, poire, fraise et pamplemousse', '3.10', '2018-05-27 22:00:00', '2018-05-28 21:59:59'),
+(2, 2, '2018-05-24', '2018-05-28 10:12:20', 1, 'Dessert marbré', 'Dessert marbré, citron et framboise', '3.10', '2018-05-27 22:00:00', '2018-05-28 21:59:59'),
+(3, 1, '2018-05-24', '2018-05-28 10:12:20', 1, 'Salade du soleil', 'Salade de pâtes composées de pâtes, poulet, courguettes, tomates cerises et confites basilic', '6.70', '2018-05-27 22:00:00', '2018-05-28 21:59:59'),
+(4, 1, '2018-05-24', '2018-05-28 10:12:20', 1, 'Salade poulet verde', 'Salade de poulet dont tous les accompagnements sont vert : fèves, petit-pois, avocat, crème de roquette', '6.70', '2018-05-27 22:00:00', '2018-05-28 21:59:59'),
+(5, 2, '2018-05-25', '2018-05-28 10:15:07', 0, 'Fromage blanc', 'Fromage blanc du producteur du coin avec coulis au choix : crème de marron ou fruit rouge', '3.10', '2018-05-28 22:00:00', '2018-05-29 21:59:59'),
+(6, 2, '2018-05-25', '2018-05-28 10:15:07', 0, 'Verrine grecque', 'Verrine aux abricots, muesli, yahourt grec', '3.10', '2018-05-28 22:00:00', '2018-05-29 21:59:59'),
+(7, 1, '2018-05-25', '2018-05-28 10:15:07', 0, 'Salade Thaï', 'Salade thaï avec crevettes, carottes, courgette, nouilles, coriande et sésame', '6.70', '2018-05-28 22:00:00', '2018-05-29 21:59:59'),
+(8, 1, '2018-05-25', '2018-05-28 10:15:07', 0, 'Wrap mexicain', 'Wrap, poulet, guacamole, salade iceberg, oignon rouge et tomate', '6.70', '2018-05-28 22:00:00', '2018-05-29 21:59:59'),
+(9, 2, '2018-05-26', '2018-05-28 10:15:07', 0, 'Tarte coco', 'Tarte à la noix de coco  avec son coulis de chocolat intense', '3.10', '2018-05-29 22:00:00', '2018-05-30 21:59:59'),
+(10, 2, '2018-05-26', '2018-05-28 10:15:07', 0, 'Tarte chocolat', 'Délicieuse tarte au chocolat, surmontée d\'un crumble croquant', '3.10', '2018-05-29 22:00:00', '2018-05-30 21:59:59'),
+(11, 1, '2018-05-26', '2018-05-28 10:15:07', 0, 'Sandwich méditerranéen', 'Jambon cru, tapenade, tomates, fêta dans pain de tradition', '6.70', '2018-05-29 22:00:00', '2018-05-30 21:59:59'),
+(12, 1, '2018-05-26', '2018-05-28 10:15:07', 0, 'La Pesto', 'Salade de ravioli au fromage, sauce pesto, tomate séchée, pignons et parmesan', '6.70', '2018-05-29 22:00:00', '2018-05-30 21:59:59');
 
 -- --------------------------------------------------------
 
