@@ -24,22 +24,56 @@ Liste des requêtes SQL
 2./ Afficher le détail de la commande 4
     SELECT * FROM détail_commande WHERE Commande_id=4
 
-3./ Afficher la liste des commandes passées par l'utilisateur 6 ou par Sancho (jointure)
+3./ Afficher la liste des commandes passées par utilisateur ou par Sancho (jointure)
+    --> par utilisateur
+        SELECT commande.id, Utilisateur_id, commande.date, utilisateur.prenom, utilisateur.nom 
+        FROM commande
+        LEFT JOIN utilisateur ON commande.Utilisateur_id=utilisateur.id
+    --> par Molly Diego
+        SELECT commande.id, Utilisateur_id, commande.date, utilisateur.prenom, utilisateur.nom 
+        FROM commande
+        LEFT JOIN utilisateur ON commande.Utilisateur_id=utilisateur.id
+        WHERE utilisateur.nom="Diego"    
+
 
 4./ Afficher la liste des produits
     SELECT * FROM produit
+    --> liste des produits avec leur categorie
+        SELECT produit.id, produit.Categorie_id, produit.nom, produit.description, categorie.id, categorie.label
+        FROM produit
+        LEFT JOIN categorie ON produit.Categorie_id=categorie.id
+        ORDER BY label DESC
 
 5./ Afficher la liste des desserts 
-    SELECT * FROM `produit` WHERE Categorie_id=2    <-- (sachant que l'ID desserts = 2)
-                                                    <-- (faire la même chose avec la jointure entre la table produits et categorie)
+    SELECT produit.id, produit.Categorie_id, produit.nom, produit.description, categorie.id, categorie.label
+    FROM produit
+    LEFT JOIN categorie ON produit.Categorie_id=categorie.id
+    WHERE categorie.label="dessert"
 
 
 6./ Afficher la liste des plats
-    SELECT * FROM `produit` WHERE Categorie_id=1    <-- (sachant que l'ID desserts = 2)
-                                                    <-- (faire la même chose avec la jointure entre la table produits et categorie)
+    SELECT produit.id, produit.Categorie_id, produit.nom, produit.description, categorie.id, categorie.label
+    FROM produit
+    LEFT JOIN categorie ON produit.Categorie_id=categorie.id
+    WHERE categorie.label="plat"
 
 7./ Afficher la liste des produits du jours en date du 29/05/2018 (jointure)
-
+    --> liste des produits du jours avec détail produit et categorie
+        SELECT 
+        produitsdujour.id, produitsdujour.date, produitsdujour.Produit_id, 
+        produit.id, produit.Categorie_id, produit.nom, 
+        categorie.id, categorie.label FROM produitsdujour 
+        LEFT JOIN produit ON produitsdujour.Produit_id=produit.id 
+        LEFT JOIN categorie ON produit.Categorie_id=categorie.id 
+        ORDER BY produitsdujour.date
+    --> liste des produits du jours en date du 29/05/2018
+        SELECT 
+        produitsdujour.id, produitsdujour.date, produitsdujour.Produit_id, 
+        produit.id, produit.Categorie_id, produit.nom, 
+        categorie.id, categorie.label FROM produitsdujour 
+        LEFT JOIN produit ON produitsdujour.Produit_id=produit.id 
+        LEFT JOIN categorie ON produit.Categorie_id=categorie.id 
+        WHERE produitsdujour.date="2018-05-29"
 
 8./ Afficher la liste des clients
     SELECT * FROM utilisateur WHERE isClient=1
@@ -54,3 +88,15 @@ Liste des requêtes SQL
     SELECT * FROM `utilisateur` WHERE isLivreur=1 AND statutLivreur=1
 
 12./ Afficher le détail de la commande passées le 31/05/2018 par Sancho (jointure)
+    SELECT
+    utilisateur.id, utilisateur.prenom, utilisateur.nom,
+    commande.id, commande.Utilisateur_id, commande.date,
+    détail_commande.id, `détail_commande`.`quantité`, `détail_commande`.`produitsDuJour_id`, détail_commande.Commande_id,
+    produitsdujour.id, produitsdujour.date, produitsdujour.Produit_id,
+    produit.id, produit.Categorie_id, produit.nom
+    FROM utilisateur
+    LEFT JOIN commande ON utilisateur.id=commande.Utilisateur_id
+    LEFT JOIN détail_commande ON commande.id=détail_commande.Commande_id
+    LEFT JOIN produitsdujour ON `détail_commande`.`produitsDuJour_id`=produitsdujour.id
+    LEFT JOIN produit ON produitsdujour.Produit_id=produit.id
+    WHERE utilisateur.nom="decuba"
